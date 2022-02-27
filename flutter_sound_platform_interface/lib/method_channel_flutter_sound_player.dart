@@ -47,17 +47,18 @@ class MethodChannelFlutterSoundPlayer extends FlutterSoundPlayerPlatform
   void setCallback()
   {
     //_channel = const MethodChannel('com.dooboolab.flutter_sound_player');
+
     _channel.setMethodCallHandler((MethodCall call)
     {
-      return channelMethodCallHandler(call)!;
+      return channelMethodCallHandler(call);
     });
   }
 
 
-  Future<dynamic>? channelMethodCallHandler(MethodCall call)
+  Future<dynamic> channelMethodCallHandler(MethodCall call)
   {
     FlutterSoundPlayerCallback aPlayer = getSession(call.arguments!['slotNo'] as int);
-    Map arg = call.arguments ;
+    Map arg = call.arguments;
 
     bool success = call.arguments['success'] != null ? call.arguments['success'] as bool : false;
     if (arg['state'] != null)
@@ -143,7 +144,11 @@ class MethodChannelFlutterSoundPlayer extends FlutterSoundPlayerPlatform
         throw ArgumentError('Unknown method ${call.method}');
     }
 
-    return null;
+    final completer = Completer<dynamic>();
+    Future.delayed(Duration(seconds: 1), () {
+      completer.complete(true);
+    });
+    return completer.future;
   }
 
 
